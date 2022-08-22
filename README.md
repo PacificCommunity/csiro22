@@ -1,6 +1,6 @@
 # csiro22
 
-Course material for the Close-Kin Mark-Recapture (CKMR) workshop at CSIRO Battery Point (Hobart), Aug 29th-Sept 2nd 2022.
+Course material for the CKMR workshop at CSIRO Battery Point (Hobart), Aug 29th-Sept 2nd 2022.
 
 In the course of the workshop you will learn:
 
@@ -13,8 +13,8 @@ In the course of the workshop you will learn:
 
 General documents: 
 
- - Rcrip22.pdf: an overview of the required software and coding framework used in the workshop
- - turn_off_bc.r: script to source once before using the offarray package (turns off R's default byte-compiler)
+ - [Rcrip22.pdf](https://github.com/markbravington/csiro22/blob/main/Rcrib22.pdf): an overview of the required software and coding framework used in the workshop
+ - [turn_off_bc.r](https://github.com/markbravington/csiro22/blob/main/turn_off_bc.r): script to source once before using the offarray package (turns off R's default byte-compiler)
  
 Exercises for specific workshop days will be added throughout.
 
