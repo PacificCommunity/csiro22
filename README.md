@@ -18,5 +18,7 @@ General documents:
  
 Exercises for specific workshop days will be added throughout.
 
+There is [workshop website](https://markbravington.github.io/csiro22/tutorials/about.html), on which
+tips and vignettes for some of the exercises will be posted during the week.
 
 
