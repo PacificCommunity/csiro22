@@ -1,3 +1,5 @@
+"sqr" <- function(x) x^2
+
 "numderiv" <-
 function(f,x0,eps=0.0001, TWICE.=TRUE, param.name=NULL, ..., SIMPLIFY=TRUE) {
   if( is.null( param.name))
