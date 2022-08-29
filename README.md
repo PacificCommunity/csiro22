@@ -22,3 +22,14 @@ There is a [workshop website](https://markbravington.github.io/csiro22/tutorials
 tips and vignettes for some of the exercises will be posted during the week.
 
 
+## Day 1 exercise
+
+* Rerun the delfi A example (`data_and_scripts/fit_delfi_A.r`) with a third of the samples
+
+Tip: You'll need to remove two thirds of all the samples, including POPs. You'll also need to adjust
+the row numbers in the POPs dataset to match the new row numbers in your `Samps` table. 
+You can use the function `subset_samples` to do this for you, e.g. 
+
+`newsamps <- subset_samples(samp_delfi_A, runif(nrow(samp_delfi_A$Samps)) < 1/3)`
+
+Then, move on to `boring_data_prep_delfi_A` using `newsamps` instead of `samp_delfi_A`.
