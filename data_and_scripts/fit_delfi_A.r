@@ -9,6 +9,7 @@
 library( mvbutils)  # various low-level utilities, eg cq()
 library( offarray)  # arrays/vectors don't have to start at 1 any more! Freedom!
 library( debug)     # so we can watch the fun
+library( atease)
 source("ckmr_funs.r")
 
 ### ACTION STARTS HERE
