@@ -9,6 +9,7 @@
 library( mvbutils)  # various low-level utilities, eg cq()
 library( offarray)  # arrays/vectors don't have to start at 1 any more! Freedom!
 library( debug)     # so we can watch the fun
+source("ckmr_funs.r")
 
 ### ACTION STARTS HERE
 
@@ -20,7 +21,7 @@ print( names( samp_delfi_A))
 print( head( samp_delfi_A$Samps))
 scatn( 'Delfi_A #POPs = %i', nrow( samp_delfi_A$POPs))
 
-samp_delfi_A <- "READ THE DAMN SCRIPT AND EDIT APPROPRIATELY; DON'T JUST RUN IT"
+## samp_delfi_A <- "READ THE DAMN SCRIPT AND EDIT APPROPRIATELY; DON'T JUST RUN IT"
 
 # Summarize sampling & kin & other data for delfi_A, and teach the lglk function about it
 lglk_delfi_A <- generic_lglk_MOP_ideal_mammal # a copy that will be taught about delfi_A data
