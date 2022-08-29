@@ -1700,7 +1700,7 @@ stopifnot( all( dadnam[ iPHSP[,1]]==dadnam[ iPHSP[,2]]))
   stuff@public <- sb@public
 return( stuff)
 }
-attr(,"doc")
+
 # FLAT-FORMAT DOCUMENTATION
 
 
