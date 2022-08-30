@@ -1,7 +1,8 @@
 library( mvbutils)  # various low-level utilities, eg cq()
 library( offarray)  # arrays/vectors don't have to start at 1 any more! Freedom!
 library( debug)     # so we can watch the fun
-library(atease)
+library( atease)
+source("ckmr_funs.r")
 
 print( load( 'samp_delfi_A.rda')) # object samp_notog1
 
