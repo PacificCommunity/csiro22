@@ -1,4 +1,4 @@
-"boring_data_prep_delfi_A" <-
+"boring_data_prep_delfi_A_both" <-
 function( sampo, prev_env=parent.env()){
 ## Given "CKMR sample data", probably from 'prep_from_sim2'...
 ## Make arrays with n_comps and n_kin, per kinship and per covars
@@ -10,7 +10,7 @@ function( sampo, prev_env=parent.env()){
 # lglk_mydata <- generic_lglk_for_this_kinda_CKMR_data  # a function
 # env <- boring_data_prep_mydata( my_samps, prev_env=environment( lglk_mydata))
 # environment( lglk_mydata) <- env
-# lglk_mydata( params) # lglk_mydata can now refer internally to 'n_MOP' etc
+# lglk_mydata( params) # lglk_mydata can now refer internally to 'n_POP' etc
 
 ## Warning: this is boring. Did the name not tip you off? You almost
 ## certainly do NOT need to understand what's in it. And there's esoteRica
@@ -19,7 +19,6 @@ function( sampo, prev_env=parent.env()){
   # For THIS version, only look at FEMALE samples, drop all HSPs, and restrict
   # ... to adult-juve comps at time of sampling
 
-  sampo <- subset_samples( sampo, Sex=='F') # drops all POPs/HSPs with any non-Female member
   extract.named( sampo[ cq( Samps, POPs)]) # drop HSPs ...
 
   extract.named( Samps)
@@ -47,33 +46,35 @@ function( sampo, prev_env=parent.env()){
   Bju_range <- min( B[ offposs]) %upto% max( B[ offposs])
   Yad_range <- min( Y[ parposs]) %upto% max( Y[ parposs])
   Aad_range <- min( A[ parposs]) %upto%  max( A[ parposs])
+  Sad_range <- c("M", "F")
 
   # m_... is samp size
-  m_ad_YA <- offarray( table( Y=Y[ parposs], A=A[ parposs]))
+  m_ad_YAS <- offarray( table( Y=Y[ parposs], A=A[ parposs], S=Sex[ parposs]))
   m_ju_B <- offarray( table( B=B[ offposs]))
 
   # Number of comparisons: product of sample sizes by category
   # See ?offarray::noloop  or code of lglk_aggregate() below
-  n_comp_MOP_BYA <- autoloop( Bju=Bju_range, Yad=Yad_range, Aad=Aad_range, {
+  n_comp_POP_BYAS <- autoloop( Bju=Bju_range, Yad=Yad_range, Aad=Aad_range, Sad=Sad_range, {
       Bad <- Yad - Aad
       # Only do comps where ju is born after adult
       # ... which also avoids double-counting and self-comparisons
-      m_ju_B[ Bju] * m_ad_YA[ Yad, Aad] * (Bju > Bad)
+      m_ju_B[ Bju] * m_ad_YAS[ Yad, Aad, Sad] * (Bju > Bad)
     })
 
-  n_MOP_BYA <- offarray( table(
+  n_POP_BYAS <- offarray( table(
       Bju=B[ POPs[,2]],
       Yad=Y[ POPs[,1]],
-      Aad=A[ POPs[,1]]),
-      template=n_comp_MOP_BYA) # template ensures full ranges used, even if no entries for some values
+      Aad=A[ POPs[,1]],
+      Sad=Sex[ POPs[,1]]),
+      template=n_comp_POP_BYAS) # template ensures full ranges used, even if no entries for some values
 
   # That's what's needed for fitting...
   # ... next only for "pedagogical" purposes (data inspection)
-  POP_df <- boring_dfize( n_MOP_BYA, n_comp_MOP_BYA)
+  POP_df <- boring_dfize( n_POP_BYAS, n_comp_POP_BYAS)
 
   # copy useful vars into envo... R magic, just trust me on this one ;)
-  list2env( mget( cq( n_comp_MOP_BYA, n_MOP_BYA,
-      Bju_range, Yad_range, Aad_range, # in sample
+  list2env( mget( cq( n_comp_POP_BYAS, n_POP_BYAS,
+      Bju_range, Yad_range, Aad_range, Sad_range, # in sample
       AMAX,
       POP_df)),
       envo)
@@ -86,35 +87,36 @@ return( envo)
 
 
 
-"generic_lglk_MOP_ideal_mammal" <-
+"generic_lglk_POP_ideal_mammal_both" <-
 function( params){
   assign( 'last_params', params, environment( sys.function())) # debugging etc
 
   ## Unpack parameters
-  Nfad_y0 <- exp( params[ 1])
-  RoI <- params[ 2]
+  Nad_y0 <- exp( params[ 1])
+  RoI <- params[ 2]            # rate of increase
+  srM <- inv.logit(params[ 3]) # sex ratio
   # ... that's all,  folks
 
   ## Population dynamics
-
-  N_Y <- offarray( 0, dimseq=list( Y=years))
-  N_Y[] <- Nfad_y0 * exp( RoI * (years-y0))
+  N_YS <- offarray( 0, dimseq=list( Y=years, S=Sad_range))
+  N_YS[,"M"] <- Nad_y0 * srM * exp( RoI * (years-y0))      # males
+  N_YS[,"F"] <- Nad_y0 * (1-srM) * exp( RoI * (years-y0))  # females
 
   # Ideal kinship probs, ie if we knew all important covariates......
-  Pr_MOP_BYA <- autoloop( Bju=Bju_range, Yad=Yad_range, Aad=Aad_range, {
+  Pr_POP_BYAS <- autoloop( Bju=Bju_range, Yad=Yad_range, Aad=Aad_range, Sad=Sad_range, {
     Bad <- Yad - Aad
     ( Bju <= Yad ) *          # was ad still alive at B[ju] ?
     ( Bju >= Amat + Bad ) *   # was ad mature at B[ju] ?
-    ( 1/N_Y[ Bju])              # ad's ERO at B[ju] if alive & mature, divided by TRO that year
+    ( 1/N_YS[ Bju, Sad])      # ad's ERO at B[ju] if alive & mature, divided by TRO that year
   })
 
   # ...... which in this case, we DO! so no need to corrupt this to observables
 
   # Housekeeping: useful to keep some stuff after function exits. Trust me, this incantation works...
-  list2env( mget( cq( Nfad_y0, RoI, N_Y, Pr_MOP_BYA)), envir=environment( sys.function()))
+  list2env( mget( cq( Nad_y0, RoI, srM, N_YS, Pr_POP_BYAS)), envir=environment( sys.function()))
 
   lglk <- MAKE_FINITE( # anti-infinity guard
-      sum( dpois( n_MOP_BYA, lambda=n_comp_MOP_BYA * Pr_MOP_BYA, log=TRUE))
+      sum( dpois( n_POP_BYAS, lambda=n_comp_POP_BYAS * Pr_POP_BYAS, log=TRUE))
     )
 
 return( lglk)
