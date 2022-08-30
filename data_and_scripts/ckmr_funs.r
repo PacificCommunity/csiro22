@@ -1701,8 +1701,6 @@ stopifnot( all( dadnam[ iPHSP[,1]]==dadnam[ iPHSP[,2]]))
 return( stuff)
 }
 
-# FLAT-FORMAT DOCUMENTATION
-
 
 
 "pyro_enfum" <-
@@ -1806,21 +1804,25 @@ return( result)
 
 
 "subset_samples" <-
-function( kinsamps, expr){
-  keepo <- eval( substitute( expr), list2env( kinsamps$Samps, parent=parent.frame( 2)))
+function( kinsamps, expr, guess_parent=TRUE){
+  if( guess_parent){
+    keepo <- eval( substitute( expr), list2env( kinsamps$Samps, parent=parent.frame( 2)))
+  } else {
+      keepo <- eval( substitute( expr), list2env( kinsamps$Samps))
+  }
 stopifnot( is.logical( keepo), length( keepo)==nrow( kinsamps$Samps))
 
   kinships <- grep( 'Ps$', names( kinsamps), value=TRUE)
   kinships <- kinships %SUCH.THAT% (is.numeric( kinsamps[[.]]) && (ncol( kinsamps[[.]])==2))
   
-  named_kinships <- do.on( kinsamps[ kinships], {
+  named_kinships <- FOR( kinsamps[ kinships], {
     .[] <- kinsamps$Samps$Me[ c( .)] # names not numbers
   return( .)
   })
 
   Samps <- kinsamps$Samps[ keepo,,drop=FALSE]
   # Match names back into new reduced Samps (if present)
-  ikins <- do.on( named_kinships, {
+  ikins <- FOR( named_kinships, {
       ik <- nchar( .) # right shape!
       ik[] <- match( ., Samps$Me, 0)
     return( ik[ ik[,1]*ik[,2]>0,]) # where both members present in reduced Samps
