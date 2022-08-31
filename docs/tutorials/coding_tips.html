@@ -194,10 +194,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell-output cell-output-stdout">
 <pre><code>         B
 Y         [,2005] [,2006] [,2007] [,2008]
-  [2012,]     0.4     0.5     0.0     0.6
-  [2013,]     0.1     0.1     0.8     0.1
-  [2014,]     0.1     0.3     0.6     1.0
-  [2015,]     0.2     0.3     0.7     0.4</code></pre>
+  [2012,]     0.1     0.3     1.0     0.4
+  [2013,]     0.1     1.0     0.1     0.6
+  [2014,]     0.3     0.2     0.1     0.3
+  [2015,]     0.5     0.4     0.2     0.1</code></pre>
 </div>
 </div>
 <p>will create an <code>offarray</code> of dimensions <code>Y</code> going from 2012 to 2015 and <code>B</code> going from 2005 to 2008. To query the value for <code>Y=2014</code> and <code>B=2007</code>, just specify these levels directly:</p>
@@ -206,7 +206,7 @@ Y         [,2005] [,2006] [,2007] [,2008]
 <div class="cell-output cell-output-stdout">
 <pre><code>         B
 Y         [,2007]
-  [2014,]     0.6</code></pre>
+  [2014,]     0.1</code></pre>
 </div>
 </div>
 <p>The function <code>dimseq</code> will print the dimensions of an <code>offarray</code>:</p>
@@ -226,7 +226,7 @@ $B
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dimseq</span>(oatbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32</code></pre>
+<pre><code> [1] 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28</code></pre>
 </div>
 </div>
 <section id="summary-operations-on-offarray-objects" class="level2">
@@ -238,7 +238,7 @@ $B
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(<span class="fu">as.array</span>(oasmp), <span class="dv">1</span>, sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>2012 2013 2014 2015 
- 1.5  1.1  2.0  1.6 </code></pre>
+ 1.8  1.8  0.9  1.2 </code></pre>
 </div>
 </div>
 <p>If the aggregation function is a sum (often the case with CKMR), another option is to use the <code>sumover</code> function which was designed specifically for offarrays.</p>
@@ -247,19 +247,19 @@ $B
 <div class="cell-output cell-output-stdout">
 <pre><code>B
 [2005] [2006] [2007] [2008] 
-   0.8    1.2    2.1    2.1 </code></pre>
+   1.0    1.9    1.4    1.4 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sumover</span>(oasmp, <span class="st">'B'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Y
 [2012] [2013] [2014] [2015] 
-   1.5    1.1    2.0    1.6 </code></pre>
+   1.8    1.8    0.9    1.2 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sumover</span>(oasmp, <span class="st">'Y'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>B
 [2005] [2006] [2007] [2008] 
-   0.8    1.2    2.1    2.1 </code></pre>
+   1.0    1.9    1.4    1.4 </code></pre>
 </div>
 </div>
 <p>Finally, the option <code>SLICE =</code> is useful to select a single level across other dimensions (and drop the selected dimension).</p>
@@ -269,7 +269,7 @@ $B
 <div class="cell-output cell-output-stdout">
 <pre><code>         B
 Y         [,2005] [,2006] [,2007]
-  [2012,]     0.4     0.5       0</code></pre>
+  [2012,]     0.1     0.3       1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(oasmp[<span class="dv">2012</span>, <span class="dv">2005</span><span class="sc">:</span><span class="dv">2007</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -283,7 +283,7 @@ Y         [,2005] [,2006] [,2007]
 <div class="cell-output cell-output-stdout">
 <pre><code>B
 [2005] [2006] [2007] 
-   0.4    0.5    0.0 </code></pre>
+   0.1    0.3    1.0 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(oasmp[<span class="at">SLICE=</span><span class="dv">2012</span>, <span class="dv">2005</span><span class="sc">:</span><span class="dv">2007</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
